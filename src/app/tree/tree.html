@@ -1,0 +1,93 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <script type="text/ng-template"
+              id="tree_node.html">
+        <div ng-if="!entry.inEditMode">
+          <div>
+            <i class="fa"
+               ng-class="{'fa-file' : entry.type==='FILE', 'fa-folder' : entry.type==='FOLDER'}"></i>
+
+            <i class="fa"
+               ng-class="{'fa-check-square-o' : entry.isSelected, 'fa-square-o': !entry.isSelected}"
+               ng-click="vm.toggleSelect(entry, !entry.isSelected)"></i>
+            <span ng-click="entry.type === 'FILE' && vm.previewFile(entry)">{{entry.name}}</span>
+            <button ng-click="vm.addFolder(entry)"
+                    ng-if="entry.type === 'FOLDER'">
+              +Folder
+            </button>
+            <button ng-click="vm.addFile(entry)"
+                    ng-if="entry.type === 'FOLDER'">
+              +File
+            </button>
+            <button ng-click="vm.editNode(entry)">
+              Edit
+            </button>
+          </div>
+          <ul>
+            <li ng-repeat="entry in entry.nodes"
+                ng-include="'tree_node.html'"></li>
+          </ul>
+        </div>
+        <div ng-if="entry.inEditMode">
+          <div>
+            <i class="fa"
+               ng-class="{'fa-file' : entry.type==='FILE', 'fa-folder' : entry.type==='FOLDER'}"></i>
+            <input type="text"
+                   ng-model="entry.name">
+            <button ng-click="vm.saveNode(entry)">
+              Save
+            </button>
+          </div>
+          <ul>
+            <li ng-repeat="entry in entry.nodes"
+                ng-include="'tree_node.html'"></li>
+          </ul>
+        </div>
+      </script>
+      <div class="tree">
+        <div>
+          Root
+          <button ng-click="vm.addFolder(vm.tree)">
+            +Folder
+          </button>
+          <button ng-click="vm.addFile(vm.tree)">
+            +File
+          </button>
+          <button ng-click="vm.removeSelected()">
+            Remove selected
+          </button>
+          <button ng-click="vm.pay()">
+            Pay
+          </button>
+        </div>
+        <ul>
+          <li ng-repeat="entry in vm.tree.nodes"
+              ng-include="'tree_node.html'"></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-6"
+         ng-if="vm.selectedFile">
+      <div>
+        <a href="#"
+           ng-click="vm.closePreview()">
+          Close
+        </a>
+      </div>
+      {{vm.selectedFile.name}}
+    </div>
+  </div>
+  <div class="payment">
+    <p class="text-red"
+       ng-if="vm.paymentError">
+      {{vm.paymentError}}
+    </p>
+    <p class="text-green"
+       ng-if="vm.paymentSuccess">
+      {{vm.paymentSuccess}}
+    </p>
+    <iframe ng-if="vm.paymentDetails.sale_url"
+            ng-src="{{vm.paymentDetails.sale_url}}"></iframe>
+  </div>
+</div>
